@@ -62,9 +62,3 @@ The agent architecture isolates decision-making into two selectable policy engin
 * **Action Guarding:** All outputs are verified against `state.can()` or `state.legal_actions` with automatic range-clamping.
 * **Emergency Fallback:** Zero-crash decision path guaranteeing a valid, cheap action (Check/Fold/Min-Raise) in the event of malformed state or latency bounds.
 * **Optimized Act Path:** Low-overhead execution pipeline written to comfortably beat $p99$ tail-latency constraints under single-threaded evaluation environments.
-
----
-### Benchmarking Decision Latency
-```bash
-python tests/test_latency.py --iterations 10000
-```
