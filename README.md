@@ -1,65 +1,58 @@
-# No-Limit: A Bot Building Tournament 
-## Hosted by Sequoia Capital, Citadel Securities & OpenAI
+# No-Limit Pokerbots: Strategy Evolution
 
-A high-performance, modular No-Limit Texas Hold’em (NLHE) agent and evaluation framework developed for **Sequoia's No-Limit Bot Building Tournament**. 
+An archive of eight increasingly aggressive tournament pokerbot submissions built for the No-Limit Bot Building Tournament hosted by Sequoia Capital, Citadel Securities, and OpenAI.
 
-Engineered to operate under strict production constraints (sub-millisecond decision allowances), this repository contains the agent source code, pre-computed strategy tables, local simulation tools, and test suites built specifically to navigate the tournament's unique variant rules.
+The project targets an eight-player no-limit hold'em variant with a five-card flop auction, ICM-based tournament scoring, strict per-action latency, and no persistent cross-table memory. Each directory under [`bots/`](bots/) is a complete historical submission containing:
 
----
+- `agent.py` — the tournament SDK entry point and selected strategy mode;
+- `core.py` — betting, auction, equity, ICM, and action-safety logic;
+- `policy.json` — precomputed starting-hand and auction lookup data.
 
-## Tournament Overview & Game Variant
+## Iteration history
 
-The tournament evaluates 8-player tables operating under an ICM-based tournament point system rather than pure chip expected value (Chip EV). 
+The folders use portfolio-friendly names. The original archive names are retained here for traceability.
 
-* **Game Base:** Standard No-Limit Texas Hold’em rules, table settings, and payout structures.
-* **The Flop Auction Twist:** In lieu of standard dealing, a **5-card auction phase** occurs for the flop, requiring agents to dynamically evaluate card value, pot odds, and resource management during the bidding and reveal phases before transitioning into post-flop execution.
-* **Production Sandbox Constraints:**
-  * **Strict Latency Budget:** $< 1\text{ ms}$ per-decision allowance without a standard local time bank.
-  * **Memory & Persistence:** Zero cross-table memory or persistent storage; seat IDs are anonymized per table.
-  * **Reliability:** Non-negotiable fault tolerance requiring robust state parsing, action clamping, and emergency check/fold fallback routines.
+| # | Readable name | Original archive | Mode | What changed |
+|---:|---|---|---|---|
+| 1 | [`mathematical-baseline`](bots/01-mathematical-baseline/) | `level1-verified.zip` | `LEVEL_1` | Conservative mathematical baseline with fixed opening ranges, ICM-aware calls, precomputed hand strength, and flop-auction valuation. |
+| 2 | [`aggressive-baseline`](bots/02-aggressive-baseline/) | `level2-verified.zip` | `LEVEL_2` | Uses the same core as iteration 1 with wider fixed opens, lower aggression thresholds, and more permissive auction choices. |
+| 3 | [`open-raise-fix-conservative`](bots/03-open-raise-fix-conservative/) | `level1-practice-v2.zip` | `LEVEL_1` | Corrects unopened-pot behavior so the big blind's legal `call` option no longer causes playable hands to limp. |
+| 4 | [`open-raise-fix-aggressive`](bots/04-open-raise-fix-aggressive/) | `level2-practice-v2.zip` | `LEVEL_2` | Applies the same unopened-pot fix while retaining the aggressive Level 2 thresholds. |
+| 5 | [`auction-budgeting`](bots/05-auction-budgeting/) | `level1-practice-v3.zip` | `LEVEL_1` | Replaces full-tournament auction budgeting with a stack-aware survival horizon based on practice-table evidence. |
+| 6 | [`wider-preflop-pressure`](bots/06-wider-preflop-pressure/) | `level3.zip` | `LEVEL_3` | Widens fixed opening ranges, carries the heads-up pressure branch forward, and scales auction budgets with pot size. |
+| 7 | [`button-steal-pressure`](bots/07-button-steal-pressure/) | `level4.zip` | `LEVEL_4` | Adds a much wider button-specific opening limit while retaining Level 3 pressure and auction sizing. |
+| 8 | [`equity-aware-final`](bots/08-equity-aware-final/) | `hail-mary.zip` | `HAIL_MARY` | Adds action-conditioned post-flop equity estimation, chip-EV call checks, continuation betting, and stronger value-raise gates. |
 
----
+The progression is intentionally historical rather than a claim that every later iteration dominates every earlier one. Levels 1 and 2 are fixed policies; despite the old README's wording, the supplied code does not perform persistent opponent profiling.
 
-## Repository & Agent Architecture
+## Design highlights
 
-The agent architecture isolates decision-making into two selectable policy engines governed by an explicit build-time configuration flag (`STRATEGY_MODE`):
+- **Fast lookup-driven decisions:** precomputed class percentiles and auction shares avoid expensive enumeration on the normal action path.
+- **Tournament-aware risk:** calls can be evaluated with ICM utility using the configured payout structure and stack distribution.
+- **Auction resource management:** the agent scores five-card flop combinations and budgets a separate auction-chip balance over an estimated survival horizon.
+- **Legal-action safety:** actions are checked and raise sizes are clamped to legal bounds, with a cheap fallback when state handling fails.
+- **Selective equity calculation:** the final iteration uses exact river equity and bounded Monte Carlo estimates on flop and turn, falling back to the heuristic model on errors.
 
-```
-                       ┌──────────────────────────────┐
-                       │    Tournament Game Engine     │
-                       └──────────────┬───────────────┘
-                                      │
-                                      ▼
-                       ┌──────────────────────────────┐
-                       │  Legal Action Guard & Safety │
-                       └──────────────┬───────────────┘
-                                      │
-                       ┌──────────────┴───────────────┐
-                       │   STRATEGY_MODE Selector     │
-                       └──────┬────────────────┬──────┘
-                              │                │
-            ┌─────────────────┘                └─────────────────┐
-            ▼                                                    ▼
-┌──────────────────────────────┐                      ┌──────────────────────────────┐
-│       Level 1 Policy         │                      │       Level 2 Policy         │
-│    (Mathematical Engine)     │                      │    (Exploitative Engine)     │
-├──────────────────────────────┤                      ├──────────────────────────────┤
-│ • Pre-computed Lookup Tables │                      │ • Per-Table Opponent Tracking│
-│ • Flop Auction Value Models  │                      │ • Dynamic Exploit Thresholds │
-│ • ICM & Stack Utility Models │                      │ • Targeted Steals & Pressure │
-└──────────────────────────────┘                      └──────────────────────────────┘
-```
+## Evaluation snapshot
 
-### 1. Strategy System
-* **Level 1 (Mathematical Tournament Baseline):**
-  * Exact pre-computed lookup tables for pre-flop and auction states.
-  * Pot odds, equity (accounting for ties/split pots), and hand-strength valuation adjusted for the 5-card flop auction dynamics.
-  * ICM-aware risk utility calculated using table settings from `state.config`.
-* **Level 2 (Exploitative / Loose-Aggressive Policy):**
-  * In-game opponent profiling (aggression factors, fold-to-pressure ratios, showdown tendencies) limited strictly to current table history.
-  * Targeted isolation raises, wider steal ranges, and value-betting gates that fall back gracefully to Level 1 logic when sample size is low.
+The attached evaluation export covers 1,000 iterations, 1,041 table records, and 148,194 hands. Its bot-version metadata does not identify which source archive produced the run, so the results are documented without attributing them to a specific folder.
 
-### 2. Runtime & Safety Guardrails
-* **Action Guarding:** All outputs are verified against `state.can()` or `state.legal_actions` with automatic range-clamping.
-* **Emergency Fallback:** Zero-crash decision path guaranteeing a valid, cheap action (Check/Fold/Min-Raise) in the event of malformed state or latency bounds.
-* **Optimized Act Path:** Low-overhead execution pipeline written to comfortably beat $p99$ tail-latency constraints under single-threaded evaluation environments.
+| Result | Count | Rate |
+|---|---:|---:|
+| First place / 50 points | 21 | 2.02% |
+| Second place / 30 points | 119 | 11.43% |
+| Third place / 20 points | 164 | 15.75% |
+| No payout | 737 | 70.80% |
+| **Any payout** | **304** | **29.20%** |
+
+Mean tournament score was **7.59 points**, with a median table length of **142 hands** and **zero recorded automatic actions**. See [`performance/evaluation-summary.md`](performance/evaluation-summary.md) for methodology and additional context.
+
+## Running a submission
+
+These are archival tournament artifacts rather than a standalone poker engine. A submission expects the tournament-provided `poker_agent_sdk` plus the `eval7` Python package. Select one folder as the submission root and keep its three files together; `core.py` loads `policy.json` relative to its own location.
+
+## Data and privacy
+
+The raw hand-history export is deliberately not included. It contains private hole cards, participant/team names, entry identifiers, and tournament UUIDs. Only aggregate statistics that cannot reconstruct individual hands or identify other participants are published.
+
+The source archives were also scanned for emails, URLs, UUIDs, credential-like fields, private keys, user-specific filesystem paths, and long token-like strings; none were found.
