@@ -64,48 +64,6 @@ The agent architecture isolates decision-making into two selectable policy engin
 * **Optimized Act Path:** Low-overhead execution pipeline written to comfortably beat $p99$ tail-latency constraints under single-threaded evaluation environments.
 
 ---
-
-## Project Structure
-
-```text
-.
-├── agent.py               # Main tournament entrypoint and action dispatcher
-├── config.py              # Environment variables and STRATEGY_MODE selector
-├── engine/
-│   ├── evaluator.py       # Hand strength, auction valuation, and equity engines
-│   ├── icm.py             # Tournament utility and stack-depth calculations
-│   └── guard.py           # Legal action clamping and sanity checks
-├── strategies/
-│   ├── level_1.py         # Baseline mathematical policy
-│   └── level_2.py         # Exploitative policy and opponent profiling
-├── tables/                # Pre-computed lookup tables and generators
-│   └── generate_tables.py
-└── tests/                 # Unit, property, and 8-player latency benchmarks
-    ├── test_latency.py
-    └── test_simulator.py
-```
-
----
-
-## Quick Start
-
-### Installation & Local Verification
-```bash
-# Clone the repository
-git clone https://github.com/your-username/no-limit-pokerbots.git
-cd no-limit-pokerbots
-
-# Run validation checks and test suite
-python -m unittest discover tests/
-```
-
-### Selecting Strategy Mode
-Set the active policy in `config.py` before packaging for submission:
-```python
-# Options: "LEVEL_1" | "LEVEL_2"
-STRATEGY_MODE = "LEVEL_1"
-```
-
 ### Benchmarking Decision Latency
 ```bash
 python tests/test_latency.py --iterations 10000
