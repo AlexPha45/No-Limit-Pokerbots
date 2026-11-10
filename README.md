@@ -1,4 +1,5 @@
-# No-Limit: A Bot Building Tournament Hosted by Sequoia Capital, Citadel Securities & OpenAI
+# No-Limit: A Bot Building Tournament 
+## Hosted by Sequoia Capital, Citadel Securities & OpenAI
 
 A high-performance, modular No-Limit Texas Hold’em (NLHE) agent and evaluation framework developed for **Sequoia's No-Limit Bot Building Tournament**. 
 
