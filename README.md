@@ -23,6 +23,12 @@ The folders use portfolio-friendly names. The original archive names are also he
 | 7 | [`button-steal-pressure`](bots/07-button-steal-pressure/) | `level4.zip` | `LEVEL_4` | Adds a much wider button-specific opening limit while retaining Level 3 pressure and auction sizing. |
 | 8 | [`equity-aware-final`](bots/08-equity-aware-final/) | `hail-mary.zip` | `HAIL_MARY` | Adds action-conditioned post-flop equity estimation, chip-EV call checks, continuation betting, and stronger value-raise gates. |
 
+## Architecture
+
+![Pokerbot architecture](docs/pokerbot-architecture.svg)
+
+The same SDK entry point, phase router, policy data, and legal-action guard run through every iteration; later versions primarily change the strategy blocks inside the auction and betting paths.
+
 ## Design highlights
 
 - **Fast lookup-driven decisions:** precomputed class percentiles and auction shares avoid expensive enumeration on the normal action path.
@@ -33,12 +39,14 @@ The folders use portfolio-friendly names. The original archive names are also he
 
 ## Evaluation snapshot
 
-The attached evaluation export covers 1,000 iterations from one of the rounds, 1,041 table records, and 148,194 hands. 
+Five supplied evaluation exports were compared using mean tournament points under the competition's 50/30/20 scoring objective. The strongest observed run covers 1,000 iterations, 1,021 table records, and 144,206 hands. Its bot-version metadata does not identify which source archive produced the run, so the results are documented without attributing them to a specific folder.
 
 | Result | Count | Rate |
 |---|---:|---:|
-| First place / 50 points | 21 | 2.02% |
-| Second place / 30 points | 119 | 11.43% |
-| Third place / 20 points | 164 | 15.75% |
-| No payout | 737 | 70.80% |
-| **Any payout** | **304** | **29.20%** |
+| First place / 50 points | 22 | 2.15% |
+| Second place / 30 points | 148 | 14.50% |
+| Third place / 20 points | 136 | 13.32% |
+| No payout | 715 | 70.03% |
+| **Any payout** | **306** | **29.97%** |
+
+Mean tournament score was **8.09 points**, with a median table length of **142 hands** and **zero recorded automatic actions**. See [`performance/evaluation-summary.md`](performance/evaluation-summary.md) for methodology and additional context.
