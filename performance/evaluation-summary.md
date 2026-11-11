@@ -2,7 +2,7 @@
 
 ## Selection
 
-Exports were ranked by mean tournament points under the competition's 50/30/20 scoring objective, with payout rate and first-place rate used only as tie-breakers. The selected run recorded the highest observed mean score at **8.09 points per table**. Its sample contains 1,021 tables; results should be read as an observed evaluation outcome rather than proof that its unidentified bot version is universally strongest.
+Exports were ranked by mean tournament points under the competition's 50/30/20 scoring objective, with payout rate and first-place rate used only as tie-breakers. The selected run recorded the highest observed mean score at **8.09 points per table**. Its sample contains 1,021 tables.
 
 ## Dataset
 
