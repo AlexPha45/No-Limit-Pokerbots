@@ -1,8 +1,8 @@
-# No-Limit Pokerbots: Strategy Evolution
+# No-Limit Pokerbots
 
-An archive of eight increasingly aggressive tournament pokerbot submissions built for the No-Limit Bot Building Tournament hosted by Sequoia Capital, Citadel Securities, and OpenAI.
+An archive of eight iterations of tournament pokerbot submissions built for the No-Limit Bot Building Tournament hosted by Sequoia Capital, Citadel Securities, and OpenAI.
 
-The project targets an eight-player no-limit hold'em variant with a five-card flop auction, ICM-based tournament scoring, strict per-action latency, and no persistent cross-table memory. Each directory under [`bots/`](bots/) is a complete historical submission containing:
+The project targets an eight-player no-limit hold'em variant with a five-card flop auction, ICM-based tournament scoring, strict per-action latency (sub-1ms), and no persistent cross-table memory. Each directory under [`bots/`](bots/) is a complete historical submission containing:
 
 - `agent.py` — the tournament SDK entry point and selected strategy mode;
 - `core.py` — betting, auction, equity, ICM, and action-safety logic;
@@ -23,8 +23,6 @@ The folders use portfolio-friendly names. The original archive names are retaine
 | 7 | [`button-steal-pressure`](bots/07-button-steal-pressure/) | `level4.zip` | `LEVEL_4` | Adds a much wider button-specific opening limit while retaining Level 3 pressure and auction sizing. |
 | 8 | [`equity-aware-final`](bots/08-equity-aware-final/) | `hail-mary.zip` | `HAIL_MARY` | Adds action-conditioned post-flop equity estimation, chip-EV call checks, continuation betting, and stronger value-raise gates. |
 
-The progression is intentionally historical rather than a claim that every later iteration dominates every earlier one. Levels 1 and 2 are fixed policies; despite the old README's wording, the supplied code does not perform persistent opponent profiling.
-
 ## Design highlights
 
 - **Fast lookup-driven decisions:** precomputed class percentiles and auction shares avoid expensive enumeration on the normal action path.
@@ -35,7 +33,7 @@ The progression is intentionally historical rather than a claim that every later
 
 ## Evaluation snapshot
 
-The attached evaluation export covers 1,000 iterations, 1,041 table records, and 148,194 hands. Its bot-version metadata does not identify which source archive produced the run, so the results are documented without attributing them to a specific folder.
+The attached evaluation export covers 1,000 iterations from one of the rounds, 1,041 table records, and 148,194 hands. 
 
 | Result | Count | Rate |
 |---|---:|---:|
@@ -44,15 +42,3 @@ The attached evaluation export covers 1,000 iterations, 1,041 table records, and
 | Third place / 20 points | 164 | 15.75% |
 | No payout | 737 | 70.80% |
 | **Any payout** | **304** | **29.20%** |
-
-Mean tournament score was **7.59 points**, with a median table length of **142 hands** and **zero recorded automatic actions**. See [`performance/evaluation-summary.md`](performance/evaluation-summary.md) for methodology and additional context.
-
-## Running a submission
-
-These are archival tournament artifacts rather than a standalone poker engine. A submission expects the tournament-provided `poker_agent_sdk` plus the `eval7` Python package. Select one folder as the submission root and keep its three files together; `core.py` loads `policy.json` relative to its own location.
-
-## Data and privacy
-
-The raw hand-history export is deliberately not included. It contains private hole cards, participant/team names, entry identifiers, and tournament UUIDs. Only aggregate statistics that cannot reconstruct individual hands or identify other participants are published.
-
-The source archives were also scanned for emails, URLs, UUIDs, credential-like fields, private keys, user-specific filesystem paths, and long token-like strings; none were found.
