@@ -1,6 +1,6 @@
 # No-Limit Pokerbots
 
-An archive of eight iterations of tournament pokerbot submissions built for the No-Limit Bot Building Tournament hosted by Sequoia Capital, Citadel Securities, and OpenAI.
+An archive of eight iterations of tournament pokerbot submissions built for the No-Limit Bot Building Tournament hosted by Sequoia Capital, Citadel Securities, and OpenAI. Selected as 1 of 231 teams from 6000+ global applicants, achieving a final placement of 163 of 231 for the Boston regional.
 
 The project targets an eight-player no-limit hold'em variant with a five-card flop auction, ICM-based tournament scoring, strict per-action latency (sub-1ms), and no persistent cross-table memory. Each directory under [`bots/`](bots/) is a complete historical submission containing:
 
