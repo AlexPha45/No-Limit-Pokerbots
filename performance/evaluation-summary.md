@@ -1,7 +1,5 @@
 # Evaluation Summary
 
-This report summarizes the strongest-performing of five supplied compressed JSON Lines evaluation exports without publishing its sensitive raw records.
-
 ## Selection
 
 Exports were ranked by mean tournament points under the competition's 50/30/20 scoring objective, with payout rate and first-place rate used only as tie-breakers. The selected run recorded the highest observed mean score at **8.09 points per table**. Its sample contains 1,021 tables; results should be read as an observed evaluation outcome rather than proof that its unidentified bot version is universally strongest.
@@ -15,8 +13,6 @@ Exports were ranked by mean tournament points under the competition's 50/30/20 s
 - 2,000 starting chips per player
 - 50/30/20 tournament-point payout structure
 - 141.24 mean hands per table; 142 median; 52–225 range
-
-The export identifies the evaluated participant but does not identify which of the eight submitted source archives generated the actions. These statistics therefore describe the attached run only and are not assigned to a named bot iteration.
 
 ## Results
 
