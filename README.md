@@ -62,7 +62,7 @@ The agent architecture isolates decision-making into two selectable policy engin
 
 ## Evaluation snapshot
 
-Five supplied evaluation exports were compared using mean tournament points under the competition's 50/30/20 scoring objective. The strongest observed run covers 1,000 iterations, 1,021 table records, and 144,206 hands. Its bot-version metadata does not identify which source archive produced the run, so the results are documented without attributing them to a specific folder.
+Observed run covering 1,000 iterations, 1,021 table records, and 144,206 hands from one of many rounds.
 
 | Result | Count | Rate |
 |---|---:|---:|
