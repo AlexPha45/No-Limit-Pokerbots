@@ -10,7 +10,7 @@ The project targets an eight-player no-limit hold'em variant with a five-card fl
 
 ## Iteration history
 
-The folders use portfolio-friendly names. The original archive names are retained here for traceability.
+The folders use portfolio-friendly names. The original archive names are also here.
 
 | # | Readable name | Original archive | Mode | What changed |
 |---:|---|---|---|---|
