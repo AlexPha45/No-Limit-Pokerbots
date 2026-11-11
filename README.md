@@ -24,10 +24,33 @@ The folders use portfolio-friendly names. The original archive names are also he
 | 8 | [`equity-aware-final`](bots/08-equity-aware-final/) | `hail-mary.zip` | `HAIL_MARY` | Adds action-conditioned post-flop equity estimation, chip-EV call checks, continuation betting, and stronger value-raise gates. |
 
 ## Architecture
+The agent architecture isolates decision-making into two selectable policy engines governed by an explicit build-time configuration flag (`STRATEGY_MODE`):
 
-![Pokerbot architecture](docs/pokerbot-architecture.svg)
-
-The same SDK entry point, phase router, policy data, and legal-action guard run through every iteration; later versions primarily change the strategy blocks inside the auction and betting paths.
+```
+                       ┌──────────────────────────────┐
+                       │    Tournament Game Engine    │
+                       └──────────────┬───────────────┘
+                                      │
+                                      ▼
+                       ┌──────────────────────────────┐
+                       │  Legal Action Guard & Safety │
+                       └──────────────┬───────────────┘
+                                      │
+                       ┌──────────────┴───────────────┐
+                       │   STRATEGY_MODE Selector     │
+                       └──────┬────────────────┬──────┘
+                              │                │
+            ┌─────────────────┘                └─────────────────┐
+            ▼                                                    ▼
+┌──────────────────────────────┐                      ┌──────────────────────────────┐
+│       Level 1 Policy         │                      │       Level 2 Policy         │
+│    (Mathematical Engine)     │                      │    (Exploitative Engine)     │
+├──────────────────────────────┤                      ├──────────────────────────────┤
+│ • Pre-computed Lookup Tables │                      │ • Per-Table Opponent Tracking│
+│ • Flop Auction Value Models  │                      │ • Dynamic Exploit Thresholds │
+│ • ICM & Stack Utility Models │                      │ • Targeted Steals & Pressure │
+└──────────────────────────────┘                      └──────────────────────────────┘
+```
 
 ## Design highlights
 
