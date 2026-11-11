@@ -30,9 +30,3 @@ The export identifies the evaluated participant but does not identify which of t
 - Recorded automatic actions: **0**
 - Mean peak stack: **3,654 chips**
 - Median peak stack: **2,431 chips**
-
-## Privacy treatment
-
-The raw export is excluded because it includes private hole-card sequences, private auction events, 231 participant/team records, entry identifiers, and 232 unique UUIDs. The public summary contains no hand-level rows, participant names, identifiers, or private cards.
-
-The export was also checked for common high-risk secret patterns. No email addresses, URLs, IPv4 addresses, private-key blocks, or credential-named fields were detected.
